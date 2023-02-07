@@ -1,102 +1,39 @@
-const table = document.getElementById("board");
-const cells = table.getElementsByTagName("td");
-const prompt = document.getElementById("prompt");
+const board = document.getElementById("board");
+const cells = board.getElementsByTagName("td");
+const turnDisplay = document.getElementById("turn");
+const resetButton = document.getElementById("reset");
 
-let player = "red";
+let redTurn = true;
 
 for (let i = 0; i < cells.length; i++) {
-  cells[i].addEventListener("click", function () {
-    handleClick(this, player);
+  cells[i].addEventListener("click", function() {
+    let column = i % 7;
+    let row = 5;
+    while (row >= 0) {
+      if (!cells[column + row * 7].classList.contains("filled")) {
+        break;
+      }
+      row--;
+    }
+    if (row < 0) {
+      return;
+    }
+    cells[column + row * 7].classList.add("filled");
+    if (redTurn) {
+      cells[column + row * 7].classList.add("red");
+      turnDisplay.innerHTML = "Yellow's Turn";
+    } else {
+      cells[column + row * 7].classList.add("yellow");
+      turnDisplay.innerHTML = "Red's Turn";
+    }
+    redTurn = !redTurn;
   });
 }
 
-function handleClick(cell, color) {
-  let row = cell.parentNode;
-  let col = cell.cellIndex;
-  let rowIndex = 0;
-
-  while (rowIndex < 5 && row.nextSibling) {
-    row = row.nextSibling;
-    rowIndex++;
-    if (!row.children[col].classList.contains("filled")) {
-      break;
-    }
+resetButton.addEventListener("click", function() {
+  for (let i = 0; i < cells.length; i++) {
+    cells[i].className = "";
   }
-  row.children[col].classList.add("filled", color);
-
-  if (checkForWin(rowIndex, col)) {
-    prompt.innerHTML = `Player ${color} wins!`;
-    for (let i = 0; i < cells.length; i++) {
-      cells[i].removeEventListener("click", handleClick);
-    }
-  } else if (checkForDraw()) {
-    prompt.innerHTML = "Draw!";
-  } else {
-    player = player === "red" ? "yellow" : "red";
-    prompt.innerHTML = `Player ${player}'s turn`;
-  }
-}
-
-function checkForWin(row, col) {
-  return (
-    checkHorizontal(row, col) ||
-    checkVertical(row, col) ||
-    checkDiagonalLeft(row, col) ||
-    checkDiagonalRight(row, col)
-  );
-}
-
-function checkHorizontal(row, col) {
-  let count = 0;
-  for (let i = col; i < 7; i++) {
-    if (
-      !table.rows[row].cells[i].classList.contains("filled") ||
-      table.rows[row].cells[i].classList.contains("yellow")
-    ) {
-      break;
-    }
-    count++;
-    if (count >= 4) {
-      return true;
-    }
-  }
-  count = 0;
-  for (let i = col; i >= 0; i--) {
-    if (
-      !table.rows[row].cells[i].classList.contains("filled") ||
-      table.rows[row].cells[i].classList.contains("yellow")
-    ) {
-      break;
-    }
-    count++;
-    if (count >= 4) {
-      return true;
-    }
-  }
-  return false;
-}
-
-function checkVertical(row, col) {
-  let count = 0;
-  for (let i = row; i < 6; i++) {
-    if (
-      !table.rows[i].cells[col].classList.contains("filled") ||
-      table.rows[i].cells[col].classList.contains("yellow")
-    ) {
-      break;
-    }
-    count++;
-    if (count >= 4) {
-      return true;
-    }
-  }
-  return false;
-}
-
-function checkDiagonal(row, col) {
-    return false;
-}
-
-function checkForDraw() {
-    return false;
-}
+  redTurn = true;
+  turnDisplay.innerHTML = "Red's Turn";
+});
