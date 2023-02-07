@@ -1,7 +1,7 @@
-const board = document.getElementById("board");
-const cells = board.getElementsByTagName("td");
-const turnDisplay = document.getElementById("turn");
-const resetButton = document.getElementById("reset");
+const board = document.querySelector('#board');
+const cells = board.querySelectorAll('.cell');
+const turnDisplay = document.querySelector("#turn");
+const resetButton = document.querySelector("reset");
 
 let redTurn = true;
 
@@ -30,9 +30,38 @@ for (let i = 0; i < cells.length; i++) {
   });
 }
 
+// TODO
+//
+// function checkForWinner(row, column) {
+//   let cellColor = "red";
+  
+//   if (cells[column + row * 7].classList.contains("yellow")) {
+//     cellColor = "yellow";
+//   }
+  
+//   if (checkHorizontally(column + row * 7, cellColor) || checkVertically(column + row * 7, cellColor) || checkDiagonally(column + row * 7, cellColor)) {
+//     return true;
+//   }
+//   return false;
+// }
+
+// function checkHorizontally(cellNum, cellColor) {
+//   for (let i = 0; i < 7; i++) {
+    
+//   }
+// }
+
+// function checkVertically(cellNum, cellColor) {
+  
+// }
+
+// function checkDiagonally(cellNum, cellColor) {
+  
+// }
+
 resetButton.addEventListener("click", function() {
   for (let i = 0; i < cells.length; i++) {
-    cells[i].className = "";
+    cells[i].classList.remove("filled");
   }
   redTurn = true;
   turnDisplay.innerHTML = "Red's Turn";
